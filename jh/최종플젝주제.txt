@@ -4,20 +4,57 @@
 	
 	> 이전 환율 추세를 분석하여 환율을 예측해주는 시스템 구축
 	
-	>> 같은 과정으로 주식 예측 서비스
+	> 데이터
+	========
+		[https://www.data.go.kr/data/15049871/fileData.do]
+		>> 1995년1월 ~ 2019년 9월 까지 매달 1일의 환율 지표(한국)
+		
+		[https://www.koreaexim.go.kr/site/program/financial/exchange?menuid=001001004002002]
+		>> 한국수출입 은행 환율데이터(대표적인 나라들의 환율이 다 나옴)
+		>> 직접 모든 날짜의 데이터를 받아와야한다는 수고로움이 조금 있을 듯 합니다
+		
+		[https://www.data.go.kr/data/15047817/openapi.do]
+		>> 기업은행 월평균 환율 정보
+		>> 활용 신청을 해야합니다
+		
+		
+	> 같은 과정으로 주식 예측 서비스
+	
+	> 데이터
+	========
+		[https://www.data.go.kr/data/15043423/openapi.do]
+		>> 금융위원회 주식발행정보
+		
+		[https://kr.investing.com/equities/south-korea]
+		>> 네이버 증권 페이지
 	
 2. 살기 좋은 동네 찾기 서비스
 	> 가구 형태 별 중요시 생각하는 요소 분석을 통한 살기 좋은 동네 찾기 서비스
-		> 1인 가구
-		> 4인 가구  
-		> 여성 1인가구 
+	
+	> 1인 가구
+	> 4인 가구  
+	> 여성 1인가구 
+	
+	> 데이터
+	=======
+		[http://data.seoul.go.kr/dataList/10586/S/2/datasetView.do;jsessionid=0CBB332FE3910BA23D9BF7D117DF93A4.new_portal-svr-21]
+		 >> 가구 형태 공공데이터(5년 주기)
+		
+		[http://data.seoul.go.kr/dataList/11010/S/2/datasetView.do]
+		 >> 가구 형태 공공데이터(연간)
+			
+		[http://data.seoul.go.kr/dataList/10085/S/2/datasetView.do]
+		 >> 서울시 1인 가구 통계 데이터
 	
 	> 직방, 다방 같은 부동산 어플 활용
-	> 
+		
 		
 3. 전국 관광 발전 가능성 분석
 	> 이전의 관광 발전 추이 분석
 	> 사람들의 관심사 추이에 따른 발전 가능한 관광지 예측
+	
+	> '빅데이터 기반 도시여행 추천 서비스’는 국내 관광 트렌드에 맞는 서비스
+	[http://www.goodnews365.net/news/articleView.html?idxno=148796]
 	
 4. 알파고(AI)
 	> 게임
@@ -25,10 +62,14 @@
 		> 최적의 조합 찾기
 			> 아이템 추천
 		> Op.gg 활용
+			> [http://www.op.gg/champion/statistics]
 	> 스포츠
 		> 조합에 따른 승률 변화로 주력 선수 추천
 		> 전적에 따라서 특정 팀과 시합 시 최적의 조합 추천(?)
 		> KBO 데이터 받았던 거 있음 활용
+		> 데이터
+		=======
+			>> 
 		
 5. 날씨 데이터
 	> 날씨에 따른 매출 예측
@@ -38,6 +79,7 @@
 	> 노래추천
 		> 날씨 데이터, 멜론/벅스/네이버 뮤직(재생목록, 플레이리스트) 데이터 활용
 		> 날씨에 따른 노래추천 시스템
+
 
 
 		
