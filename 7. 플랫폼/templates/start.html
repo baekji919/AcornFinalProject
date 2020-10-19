@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+    #mapwrap{position:relative;overflow:hidden;}
+    .category, .category *{margin:0;padding:0;color:#000;}
+    .category {position:absolute;overflow:hidden;top:10px;left:10px;width:150px;height:50px;z-index:10;border:1px solid black;font-family:'Malgun Gothic','맑은 고딕',sans-serif;font-size:12px;text-align:center;background-color:#fff;}
+    .category .menu_selected {background:#FF5F4A;color:#fff;border-left:1px solid #915B2F;border-right:1px solid #915B2F;margin:0 -1px;}
+    .category li{list-style:none;float:left;width:50px;height:45px;padding-top:5px;cursor:pointer;}
+    .category .ico_comm {display:block;margin:0 auto 2px;width:22px;height:26px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png') no-repeat;}
+    .category .ico_coffee {background-position:-10px 0;}
+    .category .ico_store {background-position:-10px -36px;}
+    .category .ico_carpark {background-position:-10px -72px;}
+    .circle_strong{position:absolute;top:30px;left:50px;text-align:center;line-height:40px;font-size:24px;}
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Note there is no responsive meta tag here -->
+
+    <link rel="icon" href="{{ url_for('static', filename='icon/favicon.ico') }}">
+
+    <title>살기 좋은 우리 동네 찾기</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='style/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="{{ url_for('static', filename='assets/css/ie10-viewport-bug-workaround.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='style/start.css') }}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="{{ url_for('static', filename='style/start.css') }}"></script><![endif]-->
+    <script src="{{ url_for('static', filename='assets/js/ie-emulation-modes-warning.js') }}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- The mobile navbar-toggle button can be safely removed since you do not need it in a non-responsive implementation -->
+          <a class="navbar-brand" href="{{ url_for('start') }}">AcornFinalProject</a>
+        </div>
+        <!-- Note that the .navbar-collapse and .collapse classes have been removed from the #navbar -->
+        <div id="navbar">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">소개 <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-header">팀장</li>
+                <li><a href="#">백지현</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">팀원</li>
+                <li><a href="#">김현지</a></li>
+                <li><a href="#">김경환</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">전 팀원</li>
+                <li><a href="#">김진혁</a></li>
+                <li><a href="#">한현민</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('signout') }}">로그아웃</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="page-header">
+        <div id="mapwrap">
+          <div id="map" style="width:100%;height:350px;"></div>
+          <div class="category">
+            <ul>
+              <li id="coffeeMenu" onclick="changeMarker('coffee')">
+                <span class="ico_comm ico_coffee"></span>카페</li>
+              <li id="storeMenu" onclick="changeMarker('store')">
+                <span class="ico_comm ico_store"></span>편의점</li>
+              <li id="carparkMenu" onclick="changeMarker('carpark')">
+                <span class="ico_comm ico_carpark"></span>주차장</li>
+            </ul>
+          </div>
+        </div>
+
+        <div id="store_lat" style="display: none;">
+		{% for i in store_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="store_lng" style="display: none;">
+		{% for i in store_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="coffee_lat" style="display: none;">
+		{% for i in cafe_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="coffee_lng" style="display: none;">
+		{% for i in cafe_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cdf352a6c95daa50d9f554e1c18631c"></script>
+        <script>
+        var mapContainer = document.getElementById('map'),mapOption = {center: new kakao.maps.LatLng(37.498004414546934, 127.02770621963765),level: 3};
+
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+
+        var marker = new kakao.maps.Marker({ position: map.getCenter() });
+        marker.setMap(map);
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        var latlng = mouseEvent.latLng;
+        marker.setPosition(latlng);
+        var resultDiv = document.getElementById('clickLatlng');});
+
+        var coffee_list_lat = document.getElementById("coffee_lat").innerText.split(',');
+        var coffee_list_lng = document.getElementById("coffee_lng").innerText.split(',');
+        var coffeePositions = new Array();
+        for(var idx=0; idx<coffee_list_lat.length; idx++){
+        var coffee_data_lat = coffee_list_lat[idx];
+        var coffee_data_lng = coffee_list_lng[idx];
+        coffeePositions.push(new kakao.maps.LatLng(coffee_data_lat, coffee_data_lng));}
+
+        var store_list_lat = document.getElementById("store_lat").innerText.split(',');
+        var store_list_lng = document.getElementById("store_lng").innerText.split(',');
+        var storePositions = new Array();
+        for(var idx=0; idx<store_list_lat.length; idx++){
+        var store_data_lat = store_list_lat[idx];
+        var store_data_lng = store_list_lng[idx];
+        storePositions.push(new kakao.maps.LatLng(store_data_lat, store_data_lng));}
+
+        var carparkPositions = [
+        new kakao.maps.LatLng(37.49966168796031, 127.03007039430118),
+        new kakao.maps.LatLng(37.499463762912974, 127.0288828824399),
+        new kakao.maps.LatLng(37.49896834100913, 127.02833986892401),
+        new kakao.maps.LatLng(37.49893267508434, 127.02673400572665),
+        new kakao.maps.LatLng(37.49872543597439, 127.02676785815386),
+        new kakao.maps.LatLng(37.49813096097184, 127.02591949495914),
+        new kakao.maps.LatLng(37.497680616783086, 127.02518427952202)];
+
+        var markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png';
+        coffeeMarkers = [],storeMarkers = [], carparkMarkers = [];
+
+        createCoffeeMarkers();
+        createStoreMarkers();
+        createCarparkMarkers();
+
+        changeMarker('coffee');
+
+        function createMarkerImage(src, size, options) {
+        var markerImage = new kakao.maps.MarkerImage(src, size, options);
+        return markerImage;}
+
+        function createMarker(position, image) {
+        var marker = new kakao.maps.Marker({
+        position: position,
+        image: image});
+        return marker;}
+
+        function createCoffeeMarkers() {
+        for (var i = 0; i < coffeePositions.length; i++) {
+        var imageSize = new kakao.maps.Size(22, 26),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 0),
+        spriteSize: new kakao.maps.Size(36, 98)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(coffeePositions[i], markerImage);
+        coffeeMarkers.push(marker);}}
+
+        function setCoffeeMarkers(map) {
+        for (var i = 0; i < coffeeMarkers.length; i++) {
+        coffeeMarkers[i].setMap(map);}}
+
+        function createStoreMarkers() {
+        for (var i = 0; i < storePositions.length; i++) {
+        var imageSize = new kakao.maps.Size(22, 26),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 36),
+        spriteSize: new kakao.maps.Size(36, 98)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(storePositions[i], markerImage);
+        storeMarkers.push(marker);}}
+
+        function setStoreMarkers(map) {
+        for (var i = 0; i < storeMarkers.length; i++) {
+        storeMarkers[i].setMap(map);}}
+
+        function createCarparkMarkers() {
+        for (var i = 0; i < carparkPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(22, 26),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 72),
+        spriteSize: new kakao.maps.Size(36, 98)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(carparkPositions[i], markerImage);
+        carparkMarkers.push(marker);}}
+
+        function setCarparkMarkers(map) {
+        for (var i = 0; i < carparkMarkers.length; i++) {
+        carparkMarkers[i].setMap(map);}}
+
+        function changeMarker(type){
+        var coffeeMenu = document.getElementById('coffeeMenu');
+        var storeMenu = document.getElementById('storeMenu');
+        var carparkMenu = document.getElementById('carparkMenu');
+
+        if (type === 'coffee') {
+
+        coffeeMenu.className = 'menu_selected';
+
+        storeMenu.className = '';
+        carparkMenu.className = '';
+
+        setCoffeeMarkers(map);
+        setStoreMarkers(null);
+        setCarparkMarkers(null);
+
+        } else if (type === 'store') {
+        coffeeMenu.className = '';
+        storeMenu.className = 'menu_selected';
+        carparkMenu.className = '';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(map);
+        setCarparkMarkers(null);
+
+        } else if (type === 'carpark') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        carparkMenu.className = 'menu_selected';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setCarparkMarkers(map);}}
+        </script>
+      </div>
+
+      <h3>우리 동네 점수는?</h3>
+      <div class="row">
+        <div class="col-xs-4"><div class="third circle"><strong></strong>
+          <br><span>첫 번째 주제</span></div></div>
+        <div class="col-xs-4"><div class="second circle"><strong></strong>
+          <br><span>두 번째 주제</span></div></div>
+        <div class="col-xs-4"><div class="first circle"><strong></strong>
+          <br><span>세 번째 주제</span></div></div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-4"><div class="forth circle"><strong></strong>
+          <br><span>네 번째 주제</span></div></div>
+        <div class="col-xs-4">One third</div>
+        <div class="col-xs-4">One third</div>
+      </div>
+
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{{ url_for('static', filename='assets/js/ie10-viewport-bug-workaround.js') }}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/circle-progress.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/examples.js') }}"></script>
+  </body>
+</html>
