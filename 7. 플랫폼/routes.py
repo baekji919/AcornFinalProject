@@ -62,8 +62,15 @@ def signout():
     location.href="/"
     </script>'''
 
-@app.route('/start')
+@app.route('/start', methods=['GET', 'POST'])
 def start():
+    from graph import schoolgrp, busgrp
+    if request.method == 'GET':
+        value = request.args.get("value")
+
+        schoolgrp.school(value)
+        busgrp.traffic(value)
+
     if 'useremail' in session:
         store_lat = storedata.store_lat_lng_data()[0]
         store_lng = storedata.store_lat_lng_data()[1]
@@ -96,19 +103,12 @@ def start():
                                food_lat=food_lat, food_lng=food_lng,
                                brd_lat=brd_lat, brd_lng=brd_lng,
                                cine_lat=cine_lat, cine_lng=cine_lng,
-                               sch_lat=sch_lat, sch_lng=sch_lng)
+                               sch_lat=sch_lat, sch_lng=sch_lng,
+                               value=value)
     return '''
     <script> alert("로그인 필요!");
     location.href="/sign"
     </script>'''
-
-@app.route('/plot.png')
-def plot_png():
-    from graph import schoolgrp
-    name = '금천구 독산1동'
-    output = io.BytesIO()
-    FigureCanvas(schoolgrp.school(name)).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
 
 @app.errorhandler(Exception)
 def all_exception_handler(error):
