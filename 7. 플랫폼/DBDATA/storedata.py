@@ -3,7 +3,7 @@ import sqlite3
 def store_lat_lng_data():
     con = sqlite3.connect('C:/Users/acorn/Flask2/db.sqlite')
     cur = con.cursor()
-    sql = 'SELECT "Y좌표", "X좌표" FROM store'
+    sql = 'SELECT "Y좌표", "X좌표" FROM store where "상세영업상태명" = "영업";'
     cur.execute(sql)
 
     result = cur.fetchall() # 변수 지정

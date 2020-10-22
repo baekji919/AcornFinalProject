@@ -1,10 +1,14 @@
-from flask import Flask, render_template, redirect, session, url_for, flash, request
+from flask import Flask ,Response , render_template, redirect, session, url_for, flash, request
 from flask_wtf.csrf import CSRFProtect
 from models import db, Fcuser
 from forms import RegisterForm, LoginForm
 import os
-from DBDATA import cafedata, storedata
+from DBDATA import cafedata, storedata, hospitaldata, depstoredata, fooddata, schooldata, breaddata, cinemadata
+import logging
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import io
 
+logging.basicConfig(filename='log/project.log', level=logging.DEBUG)
 app = Flask(__name__)
 
 @app.route('/')
@@ -67,13 +71,44 @@ def start():
         cafe_lat = cafedata.cafe_lat_lng_data()[0]
         cafe_lng = cafedata.cafe_lat_lng_data()[1]
 
+        hos_lat = hospitaldata.hosp_lat_lng_data()[0]
+        hos_lng = hospitaldata.hosp_lat_lng_data()[1]
+
+        dep_lat = depstoredata.deps_lat_lng_data()[0]
+        dep_lng = depstoredata.deps_lat_lng_data()[1]
+
+        food_lat = fooddata.food_lat_lng_data()[0]
+        food_lng = fooddata.food_lat_lng_data()[1]
+
+        brd_lat = breaddata.bread_lat_lng_data()[0]
+        brd_lng = breaddata.bread_lat_lng_data()[1]
+
+        cine_lat = cinemadata.cinema_lat_lng_data()[0]
+        cine_lng = cinemadata.cinema_lat_lng_data()[1]
+
+        sch_lat = schooldata.school_lat_lng_data()[0]
+        sch_lng = schooldata.school_lat_lng_data()[1]
         return render_template('start.html',
                                store_lat=store_lat, store_lng=store_lng,
-                               cafe_lat=cafe_lat, cafe_lng=cafe_lng)
+                               cafe_lat=cafe_lat, cafe_lng=cafe_lng,
+                               hos_lat=hos_lat, hos_lng=hos_lng,
+                               dep_lat=dep_lat, dep_lng=dep_lng,
+                               food_lat=food_lat, food_lng=food_lng,
+                               brd_lat=brd_lat, brd_lng=brd_lng,
+                               cine_lat=cine_lat, cine_lng=cine_lng,
+                               sch_lat=sch_lat, sch_lng=sch_lng)
     return '''
     <script> alert("로그인 필요!");
     location.href="/sign"
     </script>'''
+
+@app.route('/plot.png')
+def plot_png():
+    from graph import schoolgrp
+    name = '독산 1동'
+    output = io.BytesIO()
+    FigureCanvas(schoolgrp.school(name)).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
 @app.errorhandler(Exception)
 def all_exception_handler(error):

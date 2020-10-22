@@ -4,14 +4,21 @@
     <style>
     #mapwrap{position:relative;overflow:hidden;}
     .category, .category *{margin:0;padding:0;color:#000;}
-    .category {position:absolute;overflow:hidden;top:10px;left:10px;width:150px;height:50px;z-index:10;border:1px solid black;font-family:'Malgun Gothic','맑은 고딕',sans-serif;font-size:12px;text-align:center;background-color:#fff;}
+    .category {position:absolute;overflow:hidden;top:10px;left:10px;width:405px;height:50px;z-index:10;border:1px solid black;font-family:'Malgun Gothic','맑은 고딕',sans-serif;font-size:12px;text-align:center;background-color:#fff;}
     .category .menu_selected {background:#FF5F4A;color:#fff;border-left:1px solid #915B2F;border-right:1px solid #915B2F;margin:0 -1px;}
     .category li{list-style:none;float:left;width:50px;height:45px;padding-top:5px;cursor:pointer;}
-    .category .ico_comm {display:block;margin:0 auto 2px;width:22px;height:26px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png') no-repeat;}
-    .category .ico_coffee {background-position:-10px 0;}
-    .category .ico_store {background-position:-10px -36px;}
-    .category .ico_carpark {background-position:-10px -72px;}
+    .category .ico_comm {display:block;margin:0 auto 2px;width:22px;height:26px;background:url('https://devtalk.kakao.com/uploads/default/original/2X/f/fa6989c66efd4d981cf946ea501d94f068f4b43f.png') no-repeat;}
+    .category .ico_coffee {background-position:-10px -144px;}
+    .category .ico_store {background-position:-10px -180px;}
+    .category .ico_hospital {background-position:-10px -72px;}
+    .category .ico_depstore {background-position:-10px -36px;}
+    .category .ico_school {background-position:-10px -211px;}
+    .category .ico_food {background-position:-10px -108px;}
+    .category .ico_cinema {background-position:-11px -275px;}
+    .category .ico_bread {background-position:-10px -243px;}
     .circle_strong{position:absolute;top:30px;left:50px;text-align:center;line-height:40px;font-size:24px;}
+    #loading { width: 100%; height: 100%; top: 0px; left: 0px; position: fixed; display: block; opacity: 0.7; background-color: #fff; z-index: 99; text-align: center; }
+    #loading-image { position: absolute; top: 50%; left: 50%; z-index: 100; }
     </style>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,6 +53,9 @@
   </head>
 
   <body>
+  <div id="loading">
+  <img id="loading-image" src="{{ url_for('static', filename='icon/ajax-loader.gif')}}" alt="Loading..." />
+  </div>
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -81,7 +91,6 @@
     </nav>
 
     <div class="container">
-
       <div class="page-header">
         <div id="mapwrap">
           <div id="map" style="width:100%;height:350px;"></div>
@@ -91,8 +100,18 @@
                 <span class="ico_comm ico_coffee"></span>카페</li>
               <li id="storeMenu" onclick="changeMarker('store')">
                 <span class="ico_comm ico_store"></span>편의점</li>
-              <li id="carparkMenu" onclick="changeMarker('carpark')">
-                <span class="ico_comm ico_carpark"></span>주차장</li>
+              <li id="hospitalMenu" onclick="changeMarker('hospital')">
+                <span class="ico_comm ico_hospital"></span>병원</li>
+              <li id="depstoreMenu" onclick="changeMarker('depstore')">
+                <span class="ico_comm ico_depstore"></span>백화점</li>
+              <li id="schoolMenu" onclick="changeMarker('school')">
+                <span class="ico_comm ico_school"></span>학교</li>
+              <li id="foodMenu" onclick="changeMarker('food')">
+                <span class="ico_comm ico_food"></span>음식점</li>
+              <li id="breadMenu" onclick="changeMarker('bread')">
+                <span class="ico_comm ico_bread"></span>제과점</li>
+              <li id="cinemaMenu" onclick="changeMarker('cinema')">
+                <span class="ico_comm ico_cinema"></span>영화관</li>
             </ul>
           </div>
         </div>
@@ -119,18 +138,75 @@
 		{% endfor %}
         </div>
 
+        <div id="hos_lat" style="display: none;">
+		{% for i in hos_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="hos_lng" style="display: none;">
+		{% for i in hos_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="dep_lat" style="display: none;">
+		{% for i in dep_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="dep_lng" style="display: none;">
+		{% for i in dep_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="sch_lat" style="display: none;">
+		{% for i in sch_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="sch_lng" style="display: none;">
+		{% for i in sch_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="food_lat" style="display: none;">
+		{% for i in food_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="food_lng" style="display: none;">
+		{% for i in food_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="brd_lat" style="display: none;">
+		{% for i in brd_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="brd_lng" style="display: none;">
+		{% for i in brd_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
+
+        <div id="cine_lat" style="display: none;">
+		{% for i in cine_lat %}
+			{{ i }},
+		{% endfor %}
+        </div>
+        <div id="cine_lng" style="display: none;">
+		{% for i in cine_lng %}
+			{{ i }},
+		{% endfor %}
+        </div>
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cdf352a6c95daa50d9f554e1c18631c"></script>
         <script>
         var mapContainer = document.getElementById('map'),mapOption = {center: new kakao.maps.LatLng(37.498004414546934, 127.02770621963765),level: 3};
-
         var map = new kakao.maps.Map(mapContainer, mapOption);
-
-        var marker = new kakao.maps.Marker({ position: map.getCenter() });
-        marker.setMap(map);
-        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        var latlng = mouseEvent.latLng;
-        marker.setPosition(latlng);
-        var resultDiv = document.getElementById('clickLatlng');});
 
         var coffee_list_lat = document.getElementById("coffee_lat").innerText.split(',');
         var coffee_list_lng = document.getElementById("coffee_lng").innerText.split(',');
@@ -148,21 +224,66 @@
         var store_data_lng = store_list_lng[idx];
         storePositions.push(new kakao.maps.LatLng(store_data_lat, store_data_lng));}
 
-        var carparkPositions = [
-        new kakao.maps.LatLng(37.49966168796031, 127.03007039430118),
-        new kakao.maps.LatLng(37.499463762912974, 127.0288828824399),
-        new kakao.maps.LatLng(37.49896834100913, 127.02833986892401),
-        new kakao.maps.LatLng(37.49893267508434, 127.02673400572665),
-        new kakao.maps.LatLng(37.49872543597439, 127.02676785815386),
-        new kakao.maps.LatLng(37.49813096097184, 127.02591949495914),
-        new kakao.maps.LatLng(37.497680616783086, 127.02518427952202)];
+        var hospital_list_lat = document.getElementById("hos_lat").innerText.split(',');
+        var hospital_list_lng = document.getElementById("hos_lng").innerText.split(',');
+        var hospitalPositions = new Array();
+        for(var idx=0; idx<hospital_list_lat.length; idx++){
+        var hospital_data_lat = hospital_list_lat[idx];
+        var hospital_data_lng = hospital_list_lng[idx];
+        hospitalPositions.push(new kakao.maps.LatLng(hospital_data_lat, hospital_data_lng));}
 
-        var markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png';
-        coffeeMarkers = [],storeMarkers = [], carparkMarkers = [];
+        var depstore_list_lat = document.getElementById("dep_lat").innerText.split(',');
+        var depstore_list_lng = document.getElementById("dep_lng").innerText.split(',');
+        var depstorePositions = new Array();
+        for(var idx=0; idx<depstore_list_lat.length; idx++){
+        var depstore_data_lat = depstore_list_lat[idx];
+        var depstore_data_lng = depstore_list_lng[idx];
+        depstorePositions.push(new kakao.maps.LatLng(depstore_data_lat, depstore_data_lng));}
+
+        var food_list_lat = document.getElementById("food_lat").innerText.split(',');
+        var food_list_lng = document.getElementById("food_lng").innerText.split(',');
+        var foodPositions = new Array();
+        for(var idx=0; idx<food_list_lat.length; idx++){
+        var food_data_lat = food_list_lat[idx];
+        var food_data_lng = food_list_lng[idx];
+        foodPositions.push(new kakao.maps.LatLng(food_data_lat, food_data_lng));}
+
+        var school_list_lat = document.getElementById("sch_lat").innerText.split(',');
+        var school_list_lng = document.getElementById("sch_lng").innerText.split(',');
+        var schoolPositions = new Array();
+        for(var idx=0; idx<school_list_lat.length; idx++){
+        var school_data_lat = school_list_lat[idx];
+        var school_data_lng = school_list_lng[idx];
+        schoolPositions.push(new kakao.maps.LatLng(school_data_lat, school_data_lng));}
+
+        var bread_list_lat = document.getElementById("brd_lat").innerText.split(',');
+        var bread_list_lng = document.getElementById("brd_lng").innerText.split(',');
+        var breadPositions = new Array();
+        for(var idx=0; idx<bread_list_lat.length; idx++){
+        var bread_data_lat = bread_list_lat[idx];
+        var bread_data_lng = bread_list_lng[idx];
+        breadPositions.push(new kakao.maps.LatLng(bread_data_lat, bread_data_lng));}
+
+        var cinema_list_lat = document.getElementById("cine_lat").innerText.split(',');
+        var cinema_list_lng = document.getElementById("cine_lng").innerText.split(',');
+        var cinemaPositions = new Array();
+        for(var idx=0; idx<cinema_list_lat.length; idx++){
+        var cinema_data_lat = cinema_list_lat[idx];
+        var cinema_data_lng = cinema_list_lng[idx];
+        cinemaPositions.push(new kakao.maps.LatLng(cinema_data_lat, cinema_data_lng));}
+
+        var markerImageSrc = 'https://devtalk.kakao.com/uploads/default/original/2X/f/fa6989c66efd4d981cf946ea501d94f068f4b43f.png';
+        coffeeMarkers = [],storeMarkers = [], hospitalMarkers = [], depstoreMarkers = [],
+        foodMarkers = [], cinemaMarkers = [], breadMarkers = [], schoolMarkers = [];
 
         createCoffeeMarkers();
         createStoreMarkers();
-        createCarparkMarkers();
+        createHospitalMarkers();
+        createDepstoreMarkers();
+        createFoodMarkers();
+        createCinemaMarkers();
+        createBreadMarkers();
+        createSchoolMarkers();
 
         changeMarker('coffee');
 
@@ -178,9 +299,9 @@
 
         function createCoffeeMarkers() {
         for (var i = 0; i < coffeePositions.length; i++) {
-        var imageSize = new kakao.maps.Size(22, 26),
-        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 0),
-        spriteSize: new kakao.maps.Size(36, 98)};
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 140),
+        spriteSize: new kakao.maps.Size(72, 307)};
 
         var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
         marker = createMarker(coffeePositions[i], markerImage);
@@ -192,9 +313,9 @@
 
         function createStoreMarkers() {
         for (var i = 0; i < storePositions.length; i++) {
-        var imageSize = new kakao.maps.Size(22, 26),
-        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 36),
-        spriteSize: new kakao.maps.Size(36, 98)};
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 175),
+        spriteSize: new kakao.maps.Size(72, 307)};
 
         var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
         marker = createMarker(storePositions[i], markerImage);
@@ -204,75 +325,257 @@
         for (var i = 0; i < storeMarkers.length; i++) {
         storeMarkers[i].setMap(map);}}
 
-        function createCarparkMarkers() {
-        for (var i = 0; i < carparkPositions.length; i++) {
-        var imageSize = new kakao.maps.Size(22, 26),
-        imageOptions = {spriteOrigin: new kakao.maps.Point(10, 72),
-        spriteSize: new kakao.maps.Size(36, 98)};
+        function createHospitalMarkers() {
+        for (var i = 0; i < hospitalPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 65),
+        spriteSize: new kakao.maps.Size(72, 307)};
 
         var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
-        marker = createMarker(carparkPositions[i], markerImage);
-        carparkMarkers.push(marker);}}
+        marker = createMarker(hospitalPositions[i], markerImage);
+        hospitalMarkers.push(marker);}}
 
-        function setCarparkMarkers(map) {
-        for (var i = 0; i < carparkMarkers.length; i++) {
-        carparkMarkers[i].setMap(map);}}
+        function setHospitalMarkers(map) {
+        for (var i = 0; i < hospitalMarkers.length; i++) {
+        hospitalMarkers[i].setMap(map);}}
+
+        function createDepstoreMarkers() {
+        for (var i = 0; i < depstorePositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 35),
+        spriteSize: new kakao.maps.Size(72, 307)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(depstorePositions[i], markerImage);
+        depstoreMarkers.push(marker);}}
+
+        function setDepstoreMarkers(map) {
+        for (var i = 0; i < depstoreMarkers.length; i++) {
+        depstoreMarkers[i].setMap(map);}}
+
+        function createSchoolMarkers() {
+        for (var i = 0; i < schoolPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 206),
+        spriteSize: new kakao.maps.Size(72, 307)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(schoolPositions[i], markerImage);
+        schoolMarkers.push(marker);}}
+
+        function setSchoolMarkers(map) {
+        for (var i = 0; i < schoolMarkers.length; i++) {
+        schoolMarkers[i].setMap(map);}}
+
+        function createFoodMarkers() {
+        for (var i = 0; i < foodPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 108),
+        spriteSize: new kakao.maps.Size(72, 307)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(foodPositions[i], markerImage);
+        foodMarkers.push(marker);}}
+
+        function setFoodMarkers(map) {
+        for (var i = 0; i < foodMarkers.length; i++) {
+        foodMarkers[i].setMap(map);}}
+
+        function createBreadMarkers() {
+        for (var i = 0; i < breadPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 238),
+        spriteSize: new kakao.maps.Size(72, 307)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(breadPositions[i], markerImage);
+        breadMarkers.push(marker);}}
+
+        function setBreadMarkers(map) {
+        for (var i = 0; i < breadMarkers.length; i++) {
+        breadMarkers[i].setMap(map);}}
+
+        function createCinemaMarkers() {
+        for (var i = 0; i < cinemaPositions.length; i++) {
+        var imageSize = new kakao.maps.Size(29, 33),
+        imageOptions = {spriteOrigin: new kakao.maps.Point(45, 270),
+        spriteSize: new kakao.maps.Size(72, 307)};
+
+        var markerImage = createMarkerImage(markerImageSrc, imageSize, imageOptions),
+        marker = createMarker(cinemaPositions[i], markerImage);
+        cinemaMarkers.push(marker);}}
+
+        function setCinemaMarkers(map) {
+        for (var i = 0; i < cinemaMarkers.length; i++) {
+        cinemaMarkers[i].setMap(map);}}
 
         function changeMarker(type){
         var coffeeMenu = document.getElementById('coffeeMenu');
         var storeMenu = document.getElementById('storeMenu');
-        var carparkMenu = document.getElementById('carparkMenu');
+        var hospitalMenu = document.getElementById('hospitalMenu');
+        var depstoreMenu = document.getElementById('depstoreMenu');
+        var cinemaMenu = document.getElementById('cinemaMenu');
+        var foodMenu = document.getElementById('foodMenu');
+        var schoolMenu = document.getElementById('schoolMenu');
+        var breadMenu = document.getElementById('breadMenu');
 
         if (type === 'coffee') {
 
         coffeeMenu.className = 'menu_selected';
-
         storeMenu.className = '';
-        carparkMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
 
         setCoffeeMarkers(map);
         setStoreMarkers(null);
-        setCarparkMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
 
         } else if (type === 'store') {
         coffeeMenu.className = '';
         storeMenu.className = 'menu_selected';
-        carparkMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
 
         setCoffeeMarkers(null);
         setStoreMarkers(map);
-        setCarparkMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
 
-        } else if (type === 'carpark') {
+        } else if (type === 'hospital') {
         coffeeMenu.className = '';
         storeMenu.className = '';
-        carparkMenu.className = 'menu_selected';
+        hospitalMenu.className = 'menu_selected';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
 
         setCoffeeMarkers(null);
         setStoreMarkers(null);
-        setCarparkMarkers(map);}}
+        setHospitalMarkers(map);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
+
+        } else if (type === 'depstore') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = 'menu_selected';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(map);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
+
+        } else if (type === 'food') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = 'menu_selected';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(map);
+
+        } else if (type === 'school') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = 'menu_selected';
+        breadMenu.className = '';
+        cinemaMenu.className = '';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(null);
+        setSchoolMarkers(map);
+        setFoodMarkers(null);
+
+        } else if (type === 'bread') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = 'menu_selected';
+        cinemaMenu.className = '';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(null);
+        setBreadMarkers(map);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
+
+        } else if (type === 'cinema') {
+        coffeeMenu.className = '';
+        storeMenu.className = '';
+        hospitalMenu.className = '';
+        depstoreMenu.className = '';
+        foodMenu.className = '';
+        schoolMenu.className = '';
+        breadMenu.className = '';
+        cinemaMenu.className = 'menu_selected';
+
+        setCoffeeMarkers(null);
+        setStoreMarkers(null);
+        setHospitalMarkers(null);
+        setDepstoreMarkers(null);
+        setCinemaMarkers(map);
+        setBreadMarkers(null);
+        setSchoolMarkers(null);
+        setFoodMarkers(null);
+        }};
         </script>
       </div>
-
-      <h3>우리 동네 점수는?</h3>
-      <div class="row">
-        <div class="col-xs-4"><div class="third circle"><strong></strong>
-          <br><span>첫 번째 주제</span></div></div>
-        <div class="col-xs-4"><div class="second circle"><strong></strong>
-          <br><span>두 번째 주제</span></div></div>
-        <div class="col-xs-4"><div class="first circle"><strong></strong>
-          <br><span>세 번째 주제</span></div></div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-4"><div class="forth circle"><strong></strong>
-          <br><span>네 번째 주제</span></div></div>
-        <div class="col-xs-4">One third</div>
-        <div class="col-xs-4">One third</div>
-      </div>
-
+        <img src="/plot.png" alt="my plot" height="40" width="40">
     </div>
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -282,9 +585,9 @@
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{{ url_for('static', filename='assets/js/ie10-viewport-bug-workaround.js') }}"></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/circle-progress.js') }}"></script>
     <script src="{{ url_for('static', filename='js/examples.js') }}"></script>
+    <script>$(window).ready(function() {$('#loading').hide();});</script>
   </body>
 </html>

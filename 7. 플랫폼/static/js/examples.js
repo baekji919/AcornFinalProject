@@ -61,6 +61,8 @@
     size:200,
     lineCap: 'round',
     fill: {color: '#ffa500'}
+  }).on('circle-animation-progress', function(event, progress, stepValue) {
+    $(this).find('strong').html(Math.round(100 * progress) + '<i>점</i>');
   });
 
   // Let's emulate dynamic value update
@@ -80,10 +82,13 @@
    * - usage of "data-" attributes
    */
   $('.fifth.circle').circleProgress({
-    value: 0.7
+    value: 1,
+    size:200
     // all other config options were taken from "data-" attributes
     // options passed in config object have higher priority than "data-" attributes
     // "data-" attributes are taken into account only on init (not on update/redraw)
     // "data-fill" (and other object options) should be in valid JSON format
+  }).on('circle-animation-progress', function(event, progress, stepValue) {
+    $(this).find('strong').html(Math.round(100 * progress) + '<i>점</i>');
   });
 })(jQuery);
