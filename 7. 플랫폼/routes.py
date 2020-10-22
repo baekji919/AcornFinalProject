@@ -105,7 +105,7 @@ def start():
 @app.route('/plot.png')
 def plot_png():
     from graph import schoolgrp
-    name = '독산 1동'
+    name = '금천구 독산1동'
     output = io.BytesIO()
     FigureCanvas(schoolgrp.school(name)).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
