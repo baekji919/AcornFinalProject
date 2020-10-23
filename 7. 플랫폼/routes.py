@@ -1,12 +1,11 @@
-from flask import Flask ,Response , render_template, redirect, session, url_for, flash, request
+from flask import Flask , render_template, redirect, session, url_for, flash, request
 from flask_wtf.csrf import CSRFProtect
 from models import db, Fcuser
 from forms import RegisterForm, LoginForm
 import os
 from DBDATA import cafedata, storedata, hospitaldata, depstoredata, fooddata, schooldata, breaddata, cinemadata
 import logging
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-import io
+import matplotlib.pyplot as plt
 
 logging.basicConfig(filename='log/project.log', level=logging.DEBUG)
 app = Flask(__name__)
@@ -64,12 +63,25 @@ def signout():
 
 @app.route('/start', methods=['GET', 'POST'])
 def start():
-    from graph import schoolgrp, busgrp
+    from graph import schoolgrp, busgrp, securitygrp, publicgrp, convingrp
     if request.method == 'GET':
         value = request.args.get("value")
 
         schoolgrp.school(value)
+        plt.cla()
+        plt.clf()
         busgrp.traffic(value)
+        plt.cla()
+        plt.clf()
+        securitygrp.security(value)
+        plt.cla()
+        plt.clf()
+        publicgrp.public(value)
+        plt.cla()
+        plt.clf()
+        convingrp.convin(value)
+        plt.cla()
+        plt.clf()
 
     if 'useremail' in session:
         store_lat = storedata.store_lat_lng_data()[0]

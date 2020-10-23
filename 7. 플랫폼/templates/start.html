@@ -193,19 +193,21 @@
 		{% endfor %}
         </div>
 
-        <div id="cine_lat" style="display: none;">
+          <div id="cine_lat" style="display: none;">
 		{% for i in cine_lat %}
 			{{ i }},
 		{% endfor %}
-        </div>
-        <div id="cine_lng" style="display: none;">
+          </div>
+          <div id="cine_lng" style="display: none;">
 		{% for i in cine_lng %}
 			{{ i }},
 		{% endfor %}
-        </div>
-        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cdf352a6c95daa50d9f554e1c18631c"></script>
-        <script>
-        var mapContainer = document.getElementById('map'),mapOption = {center: new kakao.maps.LatLng(37.498004414546934, 127.02770621963765),level: 3};
+          </div>
+          <div id="value"></div>
+          <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cdf352a6c95daa50d9f554e1c18631c"></script>
+          <script>
+        var mapContainer = document.getElementById('map'),
+        mapOption = {center:new kakao.maps.LatLng(37.498004414546934, 127.02770621963765), level: 3};
         var map = new kakao.maps.Map(mapContainer, mapOption);
 
         var coffee_list_lat = document.getElementById("coffee_lat").innerText.split(',');
@@ -574,8 +576,11 @@
         }};
         </script>
       </div>
-        <img src="{{ url_for('static', filename='images/Bus.png') }}" alt="my plot2" height="300" width="400">
-        <img src="{{ url_for('static', filename='images/Edu.png') }}" alt="my plot" height="300" width="400">
+        <img src="{{ url_for('static', filename='images/Bus.png') }}" alt="my plot1" height="200" width="300">
+        <img src="{{ url_for('static', filename='images/Edu.png') }}" alt="my plot2" height="200" width="300">
+        <img src="{{ url_for('static', filename='images/Pub.png') }}" alt="my plot3" height="200" width="300">
+        <img src="{{ url_for('static', filename='images/Seq.png') }}" alt="my plot4" height="200" width="300">
+        <img src="{{ url_for('static', filename='images/Conv.png') }}" alt="my plot5" height="200" width="300">
     </div>
 
 

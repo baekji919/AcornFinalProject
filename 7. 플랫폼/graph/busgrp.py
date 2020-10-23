@@ -5,7 +5,7 @@ import matplotlib as mpl
 import os
 import matplotlib.font_manager as fm
 
-font_name =fm.FontProperties(fname='C:\\Windows\\Fonts\\malgun.ttf').get_name()
+font_name = fm.FontProperties(fname='C:\\Windows\\Fonts\\malgun.ttf').get_name()
 plt.rc('font', family=font_name)
 
 mpl.rcParams['axes.unicode_minus'] = False
@@ -44,12 +44,12 @@ def traffic(name):
     plt.gca().add_artist(centre_circle)
     plt.pie(np.array(t_data).ravel(), labels=labels, colors=colors, autopct='%1.1f%%',
             wedgeprops={'linewidth': 3},
-            pctdistance=0.75, startangle=45)
+            pctdistance=0.75, shadow=True,startangle=45)
     plt.axis('equal')
-    plt.savefig(name + '_교통.png', format='png', dpi=300)
 
     strFile = 'C:/Users/acorn/Flask2/static/images/Bus.png'
     if os.path.isfile(strFile):
         os.remove(strFile)
     plt.savefig(strFile, format='png', dpi=300)
+
     return name
